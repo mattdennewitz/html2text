@@ -366,10 +366,13 @@ class HTML2Text(HTMLParser.HTMLParser):
         if tag in ["body"]:
             self.quiet = 0  # sites like 9rules.com never close <head>
 
-        if tag == "blockquote":
+        if tag == "blockquote" or ('margin-left' in tag_style and tag == 'p'):
+            indent_level = self.google_nest_count(tag_style)
+            indent_marker = '> ' * indent_level
+
             if start:
                 self.p()
-                self.o('> ', 0, 1)
+                self.o(indent_marker, 0, 1)
                 self.start = 1
                 self.blockquote += 1
             else:
